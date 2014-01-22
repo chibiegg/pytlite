@@ -54,7 +54,7 @@ class Patlite(object):
         """Close Socket"""
         self.sock.close()
 
-    def send_command(self):
+    def send_status(self):
         """Send change state command."""
         data = 0
         for i, status in enumerate(self._led):
@@ -69,7 +69,7 @@ class Patlite(object):
     def set_led(self, led, value):
         """Change a LED state."""
         self._led[led] = value
-        self.send_command()
+        self.send_status()
 
 
     # LED propertiess
@@ -86,7 +86,7 @@ class Patlite(object):
     def set_buzzer(self, value):
         """Change the buzzer state."""
         self._buzzer = value
-        self.send_command()
+        self.send_status()
 
     # Buzzer property
     buzzer = property(lambda self:self._buzzer,
