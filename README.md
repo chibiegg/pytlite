@@ -15,7 +15,6 @@ http://www.patlite.jp/product/phn_3fbe1.html
 ==========
 
 * 設定変更を行うことはできません
-* 接続時の点灯状態は取得できません
 
 利用例
 ==========
@@ -25,6 +24,9 @@ from pytlite import Patlite
 
 p = Patlite("10.0.0.1",10000,"TCP")
 
+# 現在の点灯状態を表示
+p.print_status()
+
 # 赤色点灯
 p.red = p.ON
 
@@ -33,6 +35,9 @@ p.green = p.BLINK
 
 # ブザー(短い連続音)
 p.buzzer = p.OFF
+
+# 現在の点灯状態を表示
+p.print_status()
 
 p.close()
 ```
