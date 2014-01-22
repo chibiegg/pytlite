@@ -40,6 +40,8 @@ class Patlite(object):
             not NotImplementedError("Protocol '%s' is not supported." % proto)
         self.sock.settimeout(timeout)
 
+        # Get curernt status
+        self.get_status()
 
     # Implementation of Send
     def _send_tcp(self, data):
@@ -65,6 +67,32 @@ class Patlite(object):
         data, addr = self.sock.recvfrom(10)
         if not data[:3] == "ACK":
             raise self.NAKError()
+    
+    def get_status(self):
+        """Get current status from Patlite"""
+        self.send("\x52")
+        data, addr = self.sock.recvfrom(10)
+        if not data[0] == "R":
+            raise self.NAKError()
+        data = struct.unpack("B", data[1])[0]
+
+        # Parse LED statuses.
+        for i in xrange(3):
+            led = self.OFF
+            if (data & (self.ON << i)):
+                led = self.ON
+            elif (data & (self.BLINK << i)):
+                led = self.BLINK
+            self._led[i] = led
+
+        # Parse the buzzer status.
+        buzzer = self.OFF
+        if (data & (self.LONG)):
+            buzzer = self.LONG
+        elif (data & (self.LONG)):
+            buzzer = self.SHORT
+        self._buzzer = buzzer
+
 
     def set_led(self, led, value):
         """Change a LED state."""
