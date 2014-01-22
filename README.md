@@ -16,6 +16,13 @@ http://www.patlite.jp/product/phn_3fbe1.html
 
 * 設定変更を行うことはできません
 
+インストール
+============
+
+```bash
+$ sudo install pip -e git+https://github.com/chibiegg/pytlite.git
+```
+
 利用例
 ==========
 
