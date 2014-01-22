@@ -18,12 +18,16 @@ class Patlite(object):
     _buzzer = 0
 
     send = None
+    
+    class NAKError(Exception):
+        pass
 
-    def __init__(self, host, port=10000, proto="TCP"):
+    def __init__(self, host, port=10000, proto="TCP", timeout=2):
         """Connect to Patlite Signal Tower"""
 
         self.host = host
         self.port = port
+        self.timeout = timeout
 
         if proto.upper() == "TCP":
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -34,6 +38,7 @@ class Patlite(object):
             self.send = self._send_udp
         else:
             not NotImplementedError("Protocol '%s' is not supported." % proto)
+        self.sock.settimeout(timeout)
 
 
     # Implementation of Send
@@ -56,6 +61,10 @@ class Patlite(object):
             data |= (status << i)
         data |= self._buzzer
         self.send(struct.pack("2B", 0x57, data))
+        # Recv ACK
+        data, addr = self.sock.recvfrom(10)
+        if not data[:3] == "ACK":
+            raise self.NAKError()
 
     def set_led(self, led, value):
         """Change a LED state."""
