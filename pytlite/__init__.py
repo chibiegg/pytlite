@@ -9,10 +9,16 @@ class Patlite(object):
 
     SHORT = 0x08
     LONG = 0x10
+    
+    STATUS_STRING = {
+                     OFF:"Off",BLINK:"Blink",ON:"On",
+                     SHORT:"Short",LONG:"Long"
+                     }
 
     RED = 0
     YELLOW = 1
     GREEN = 2
+    LED_STRING = ["Red","Yellow","Green"]
 
     _led = [0, 0, 0]
     _buzzer = 0
@@ -93,6 +99,11 @@ class Patlite(object):
             buzzer = self.SHORT
         self._buzzer = buzzer
 
+    def print_status(self):
+        """Print current status."""
+        for i, status in enumerate(self._led):
+            print "%7s : %s" % (self.LED_STRING[i], self.STATUS_STRING[status])
+        print "%7s : %s" % ("Buzzer", self.STATUS_STRING[self.buzzer])
 
     def set_led(self, led, value):
         """Change a LED state."""
