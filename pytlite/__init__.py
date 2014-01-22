@@ -17,16 +17,36 @@ class Patlite(object):
     _led = [0, 0, 0]
     _buzzer = 0
 
+    send = None
+
     def __init__(self, host, port=10000, proto="TCP"):
         """Connect to Patlite Signal Tower"""
+
+        self.host = host
+        self.port = port
+
         if proto.upper() == "TCP":
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.sock.connect((host, port))
+            self.send = self._send_tcp
+        elif proto.upper() == "UDP":
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            self.send = self._send_udp
         else:
             not NotImplementedError("Protocol '%s' is not supported." % proto)
-        self.sock.connect((host, port))
+
+
+    # Implementation of Send
+    def _send_tcp(self, data):
+        """Send implementation for TCP"""
+        self.sock.sendall(data)
+
+    def _send_udp(self, data):
+        """Send implementation for UDP"""
+        self.sock.sendto(data, (self.host, self.port))
 
     def close(self):
-        """Close socket"""
+        """Close Socket"""
         self.sock.close()
 
     def send_command(self):
@@ -35,7 +55,7 @@ class Patlite(object):
         for i, status in enumerate(self._led):
             data |= (status << i)
         data |= self._buzzer
-        self.sock.sendall(struct.pack("2B", 0x57, data))
+        self.send(struct.pack("2B", 0x57, data))
 
     def set_led(self, led, value):
         """Change a LED state."""
@@ -69,13 +89,18 @@ if __name__ == "__main__":
     import sys
 
     host = sys.argv[1]
+
     if len(sys.argv) >= 3:
         port = int(sys.argv[2])
     else:
         port = 10000
 
+    if len(sys.argv) >= 4:
+        proto = sys.argv[3].upper()
+    else:
+        proto = "TCP"
 
-    p = Patlite(host, port)
+    p = Patlite(host, port, proto)
 
     print """For examples.
     p.red = p.ON

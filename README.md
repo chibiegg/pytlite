@@ -7,12 +7,13 @@ Control Patlite Signal Tower from Python
 
 "**PHN-3FBE1**"及び，"**PHN-3FB**"を操作することができます．
 
+プロトコルは**TCP**，**UDP**共に対応しています．
+
 http://www.patlite.jp/product/phn_3fbe1.html
 
 機能制限等
 ==========
 
-* TCPのみの対応です，UDPは対応予定ですが現在は対応していません
 * 設定変更を行うことはできません
 * 接続時の点灯状態は取得できません
 
