@@ -20,7 +20,7 @@ http://www.patlite.jp/product/phn_3fbe1.html
 ============
 
 ```bash
-$ sudo install pip -e git+https://github.com/chibiegg/pytlite.git
+$ sudo pip install -e git+https://github.com/chibiegg/pytlite.git#egg=pytlite
 ```
 
 利用例
