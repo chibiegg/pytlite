@@ -3,6 +3,8 @@ import struct
 
 class Patlite(object):
 
+    auto_update = True
+
     OFF = 0
     BLINK = 0x20
     ON = 0x01
@@ -34,6 +36,7 @@ class Patlite(object):
         self.host = host
         self.port = port
         self.timeout = timeout
+        self.retry = retry
 
         if proto.upper() == "TCP":
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -108,7 +111,8 @@ class Patlite(object):
     def set_led(self, led, value):
         """Change a LED state."""
         self._led[led] = value
-        self.send_status()
+        if self.auto_update:
+            self.send_status()
 
 
     # LED propertiess
@@ -125,7 +129,8 @@ class Patlite(object):
     def set_buzzer(self, value):
         """Change the buzzer state."""
         self._buzzer = value
-        self.send_status()
+        if self.auto_update:
+            self.send_status()
 
     # Buzzer property
     buzzer = property(lambda self:self._buzzer,
