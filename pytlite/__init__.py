@@ -36,7 +36,6 @@ class Patlite(object):
         self.host = host
         self.port = port
         self.timeout = timeout
-        self.retry = retry
 
         if proto.upper() == "TCP":
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
